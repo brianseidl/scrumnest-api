@@ -9,7 +9,7 @@ Resources:
             Ref: CognitoUserPoolClient
           ProviderName:
             Fn::GetAtt: [ "CognitoUserPool", "ProviderName" ]
-            
+
   # IAM roles
   CognitoIdentityPoolRoles:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
@@ -19,7 +19,7 @@ Resources:
       Roles:
         authenticated:
           Fn::GetAtt: [CognitoAuthRole, Arn]
-          
+
   # IAM role used for authenticated users
   CognitoAuthRole:
     Type: AWS::IAM::Role

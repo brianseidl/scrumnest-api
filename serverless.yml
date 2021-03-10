@@ -38,7 +38,7 @@ custom:
         field: createNest
         request: "createNest-request.txt"
         response: "createNest-response.txt"
-      - 
+      -
         dataSource: ScrumNestTable
         type: Query
         field: getNests

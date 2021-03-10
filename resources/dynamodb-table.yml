@@ -14,7 +14,7 @@ Resources:
         -
           AttributeName: nestId
           AttributeType: S
-        - 
+        -
           AttributeName: nestComponent
           AttributeType: S
       ProvisionedThroughput:
