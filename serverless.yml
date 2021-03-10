@@ -1,5 +1,7 @@
 service: ScrumNestAppSync
 
+frameworkVersion: ">=2.8.0 <3.0.0"
+
 package:
   exclude:
     - ./node_modules/**
