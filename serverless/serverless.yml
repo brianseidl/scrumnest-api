@@ -1,0 +1,69 @@
+service: ScrumNestAppSync
+
+package:
+  exclude:
+    - ./node_modules/**
+    - node_modules/**
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ${opt:region, 'us-east-1'}
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  output:
+    file: output.json
+
+  dynamodb-table: 'scrumnest-${self:custom.stage}'
+
+  appSync:
+    name: ${self:service}-${self:custom.stage}
+    authenticationType: API_KEY #or AMAZON_COGNITO_USER_POOLS (TODO: Switch to Cognito)
+    #userPoolConfig:
+    #  awsRegion: ${self:provider.region}
+    #  defaultAction: ALLOW
+    #  userPoolId: { Fn::GetAtt: [CognitoUserPool, Arn] }
+    apiKeys:
+      - temp-key
+    logConfig:
+      loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
+      level: ALL
+    mappingTemplates:
+      -
+        dataSource: ScrumNestTable
+        type: Mutation
+        field: createNest
+        request: "createNest-request.txt"
+        response: "createNest-response.txt"
+      - 
+        dataSource: ScrumNestTable
+        type: Query
+        field: getNests
+        request: "getNests-request.txt"
+        response: "getNests-response.txt"
+    schema: schema.graphql
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: ScrumNestTable
+        description: Scrum Nest Table
+        config:
+          tableName: ${self:custom.dynamodb-table}
+          serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
+          iamRoleStatements:
+            - Effect: "Allow"
+              Action:
+                - "dynamodb:*"
+              Resource:
+                - "arn:aws:dynamodb:::table/scrumnest*"
+
+resources:
+  - ${file(resources/roles.yml)}
+  #- ${file(resources/cognito-user-pool.yml)}
+  #- ${file(resources/cognito-identity-pool.yml)}
+  - ${file(resources/dynamodb-table.yml)}
+  - ${file(resources/outputs.yml)}
+
+plugins:
+   - serverless-stack-output
+   - serverless-appsync-plugin

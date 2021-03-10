@@ -1,0 +1,19 @@
+type Mutation {
+    createNest: Nest!
+}
+
+type Query {
+    getNests(filter: String): [Nest!]!
+}
+
+type Nest {
+    nestId: String!
+    name: String!
+    createdAt: String!
+    owner: String!
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}

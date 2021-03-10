@@ -1,0 +1,60 @@
+Resources:
+  AppSyncDynamoDBServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "Dynamo-${self:service}-Role-${self:custom.stage}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "appsync.amazonaws.com"
+                - "dynamodb.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        -
+          PolicyName: "Dynamo-${self:service}-Policy-${self:custom.stage}"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - "arn:aws:dynamodb:${self:provider.region}:*:table/scrumnest*"
+  AppSyncLoggingServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "CloudwatchLogging-${self:service}-${self:custom.stage}-Role-${self:custom.stage}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "appsync.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        -
+          PolicyName: "CloudwatchLogging-${self:service}-Policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "cloudwatch:*"
+                Resource:
+                  - "*"

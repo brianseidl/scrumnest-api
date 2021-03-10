@@ -1,0 +1,23 @@
+---
+Resources:
+  ScrumNestTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      KeySchema:
+        -
+          AttributeName: nestId
+          KeyType: HASH
+        -
+          AttributeName: nestComponent
+          KeyType: RANGE
+      AttributeDefinitions:
+        -
+          AttributeName: nestId
+          AttributeType: S
+        - 
+          AttributeName: nestComponent
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: ${self:custom.dynamodb-table}
