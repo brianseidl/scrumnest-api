@@ -1,19 +1,55 @@
 type Mutation {
-    createNest: Nest!
+  createNest(
+    name: String!
+  ): Nest
+  addNestUser(
+    nestId: ID!,
+    username: String!
+  ): Nest
+  createStory(
+    nestId: ID!,
+    title: String!,
+    description: String,
+    owner: String,
+    status: Status
+  ): Story
 }
 
 type Query {
-    getNests(filter: String): [Nest!]!
+  nest(nestId: ID): Nest
+  nests: [Nest]
+  story(storyId: ID): Story
+  stories: [Story]
 }
 
 type Nest {
-    nestId: String!
-    name: String!
-    createdAt: String!
-    owner: String!
+  nestId: ID!
+  name: String!
+  createdAt: String!
+  owner: String  # TODO: String! once cognito is fixed
+  stories: [Story]
+  users: [String]!  # TODO: [String!] once cognito is fixed
+}
+
+type Story {
+  storyId: ID!
+  title: String!
+  description: String
+  owner: String
+  state: Status!
+  nest: Nest
+}
+
+enum Status {
+  IDEA
+  DEFINED
+  IN_DEV
+  TESTING
+  COMPLETE
+  ACCEPTED
 }
 
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }

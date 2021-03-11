@@ -7,15 +7,15 @@ package:
     - ./node_modules/**
     - node_modules/**
 
-provider:
-  name: aws
-  runtime: python3.8
-  region: ${opt:region, 'us-east-1'}
 
 custom:
   stage: ${opt:stage, 'dev'}
   output:
     file: output.json
+
+  pythonRequirements:
+    dockerizePip: non-linux
+    layer: true
 
   dynamodb-table: 'scrumnest-${self:custom.stage}'
 
@@ -31,33 +31,89 @@ custom:
     logConfig:
       loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
       level: ALL
+    defaultMappingTemplates:
+      request: my.request.template.tpl  # TODO: Make this false and to have direct lambda proxy
+      response: my.response.template.tpl  # TODO: Make this false and to have direct lambda proxy
     mappingTemplates:
       -
-        dataSource: ScrumNestTable
+        dataSource: LambdaProxy
         type: Mutation
         field: createNest
-        request: "createNest-request.txt"
-        response: "createNest-response.txt"
       -
-        dataSource: ScrumNestTable
+        dataSource: LambdaProxy
+        type: Mutation
+        field: addNestUser
+      -
+        dataSource: LambdaProxy
+        type: Mutation
+        field: createStory
+      -
+        dataSource: LambdaProxy
         type: Query
-        field: getNests
-        request: "getNests-request.txt"
-        response: "getNests-response.txt"
+        field: nest
+      -
+        dataSource: LambdaProxy
+        type: Query
+        field: nests
+      -
+        dataSource: LambdaProxy
+        type: Query
+        field: story
+      -
+        dataSource: LambdaProxy
+        type: Query
+        field: stories
     schema: schema.graphql
     dataSources:
-      - type: AMAZON_DYNAMODB
-        name: ScrumNestTable
-        description: Scrum Nest Table
+      #- type: AMAZON_DYNAMODB
+      #  name: ScrumNestTable
+      #  description: Scrum Nest Table
+      #  config:
+      #    tableName: ${self:custom.dynamodb-table}
+      #    serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
+      #    iamRoleStatements:
+      #      - Effect: "Allow"
+      #        Action:
+      #          - "dynamodb:*"
+      #        Resource:
+      #          - "arn:aws:dynamodb:::table/scrumnest*"
+      - type: AWS_LAMBDA
+        name: LambdaProxy
+        description: 'Lambda Proxy to DynamoDB'
         config:
-          tableName: ${self:custom.dynamodb-table}
-          serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
+          functionName: graphql
           iamRoleStatements:
             - Effect: "Allow"
               Action:
-                - "dynamodb:*"
+                - "lambda:InvokeFunction"
               Resource:
-                - "arn:aws:dynamodb:::table/scrumnest*"
+                - "*"  # TODO: Change this so that it can only invoke that one lambda but sls is being a PITA
+
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ${opt:region, 'us-east-1'}
+
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:*'
+        - 'dynamodb:*'
+        - 'logs:*'
+      Resource: '*'
+
+  environment:
+    REGION: ${self:provider.region}
+    DYNAMO_DB_TABLE_NAME: ${self:custom.dynamodb-table}
+
+
+functions:
+  graphql:
+    handler: functions.handler.main
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+
 
 resources:
   - ${file(resources/roles.yml)}
@@ -69,3 +125,4 @@ resources:
 plugins:
    - serverless-stack-output
    - serverless-appsync-plugin
+   - serverless-python-requirements

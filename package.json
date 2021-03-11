@@ -4,13 +4,11 @@
   "description": "",
   "dependencies": {
     "serverless-appsync-plugin": "^1.0.5",
+    "serverless-python-requirements": "^5.1.0",
     "serverless-stack-output": "^0.2.3"
   },
   "devDependencies": {
     "aws-sdk": "^2.344.0"
-  },
-  "scripts": {
-    "front": "cd front && npm start"
   },
   "author": "Brian Seidl",
   "license": "MIT"
