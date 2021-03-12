@@ -42,4 +42,23 @@ def add_nest_user(event):
 
 
 def create_story(event):
-    pass
+    # first get nest so we know it exists
+    response = table.get_item(Key={'nestId': event["arguments"]["nestId"], 'nestComponent': 'NEST'})
+    response["Item"]  # this will throw an error if nest does not exist  TODO: make this nicer
+
+    story_id = ulid.new().str
+
+    # now that we know that the nest exists, lets add the item
+    item = {
+        'nestId': event["arguments"]["nestId"],
+        'nestComponent': f"STORY.{story_id}",
+        'createdAt': str(datetime.now()),
+        'title': event["arguments"]["title"],
+        'description': event["arguments"].get("descritpion"),
+        'owner': event["arguments"].get("owner"),
+        'status': event["arguments"].get("status", "IDEA")
+    }
+    table.put_item(Item=item)
+
+    item["storyId"] = story_id
+    return(item)

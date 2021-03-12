@@ -16,10 +16,10 @@ type Mutation {
 }
 
 type Query {
-  nest(nestId: ID): Nest
+  nest(nestId: ID!): Nest
   nests: [Nest]
-  story(storyId: ID): Story
-  stories: [Story]
+  story(nestId: ID!, storyId: ID!): Story
+  stories(nestId: ID!): [Story]
 }
 
 type Nest {
@@ -27,17 +27,17 @@ type Nest {
   name: String!
   createdAt: String!
   owner: String  # TODO: String! once cognito is fixed
-  stories: [Story]
-  users: [String]!  # TODO: [String!] once cognito is fixed
+  stories: [Story]!
+  users: [String]!  # TODO: [String!]! once cognito is fixed
 }
 
 type Story {
+  nestId: ID!
   storyId: ID!
   title: String!
   description: String
   owner: String
-  state: Status!
-  nest: Nest
+  status: Status!
 }
 
 enum Status {
