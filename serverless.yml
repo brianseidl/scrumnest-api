@@ -10,11 +10,13 @@ package:
 
 custom:
   stage: ${opt:stage, 'dev'}
+  env: ${file(envs.yml):${self:custom.stage}}
+
   output:
     file: output.json
 
   pythonRequirements:
-    dockerizePip: false
+    dockerizePip: ${self:custom.env.dockerizePip}
     layer: true
 
   dynamodb-table: 'scrumnest-${self:custom.stage}'

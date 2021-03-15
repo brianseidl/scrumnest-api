@@ -1,0 +1,5 @@
+dev:
+  dockerizePip: false
+
+prod:
+  dockerizePip: non-linux
