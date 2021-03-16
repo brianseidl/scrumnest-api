@@ -2,4 +2,4 @@ dev:
   dockerizePip: false
 
 prod:
-  dockerizePip: "non-linux"
+  dockerizePip: non-linux

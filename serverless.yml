@@ -18,6 +18,8 @@ custom:
   pythonRequirements:
     dockerizePip: ${self:custom.env.dockerizePip}
     layer: true
+    useDownloadCache: false
+    useStaticCache: false
 
   dynamodb-table: 'scrumnest-${self:custom.stage}'
 
