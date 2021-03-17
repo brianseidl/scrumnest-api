@@ -1,5 +1,6 @@
+# put custom values here
 dev:
-  dockerizePip: false
+  fakeCustomValue: true
 
 prod:
-  dockerizePip: true
+  fakeCustomValue: true

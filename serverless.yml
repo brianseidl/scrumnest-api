@@ -16,7 +16,7 @@ custom:
     file: output.json
 
   pythonRequirements:
-    dockerizePip: ${self:custom.env.dockerizePip}
+    dockerizePip: false
     layer: true
 
   dynamodb-table: 'scrumnest-${self:custom.stage}'
