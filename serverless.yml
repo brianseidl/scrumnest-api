@@ -23,13 +23,13 @@ custom:
 
   appSync:
     name: ${self:service}-${self:custom.stage}
-    authenticationType: API_KEY #or AMAZON_COGNITO_USER_POOLS (TODO: Switch to Cognito)
-    #userPoolConfig:
-    #  awsRegion: ${self:provider.region}
-    #  defaultAction: ALLOW
-    #  userPoolId: { Fn::GetAtt: [CognitoUserPool, Arn] }
-    apiKeys:
-      - temp-key
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: ${self:provider.region}
+      defaultAction: ALLOW
+      userPoolId: { Fn::GetAtt: [CognitoUserPool, Arn] }
+    #apiKeys:
+    #  - temp-key
     logConfig:
       loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
       level: ALL
@@ -119,8 +119,8 @@ functions:
 
 resources:
   - ${file(resources/roles.yml)}
-  #- ${file(resources/cognito-user-pool.yml)}
-  #- ${file(resources/cognito-identity-pool.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
   - ${file(resources/dynamodb-table.yml)}
   - ${file(resources/outputs.yml)}
 

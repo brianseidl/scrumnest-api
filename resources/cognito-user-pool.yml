@@ -23,6 +23,16 @@ Resources:
         - ADMIN_NO_SRP_AUTH
       GenerateSecret: false
 
+  CognitoUserPoolClient2:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ${self:service}-${self:custom.stage}-user-pool-client-2
+      UserPoolId:
+        Ref: CognitoUserPool
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+      GenerateSecret: true
+
 Outputs:
   UserPoolId:
     Value:
