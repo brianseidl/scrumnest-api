@@ -23,6 +23,7 @@ Resources:
         - ADMIN_NO_SRP_AUTH
       GenerateSecret: false
 
+  # Amplify was giving me a hard time if I didn't have 2 cliennts so here we go
   CognitoUserPoolClient2:
     Type: AWS::Cognito::UserPoolClient
     Properties:

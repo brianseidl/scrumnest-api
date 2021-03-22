@@ -26,9 +26,9 @@ type Nest {
   nestId: ID!
   name: String!
   createdAt: String!
-  owner: String  # TODO: String! once cognito is fixed
+  owner: String!
   stories: [Story]!
-  users: [String]!  # TODO: [String!]! once cognito is fixed
+  users: [String]!
 }
 
 type Story {

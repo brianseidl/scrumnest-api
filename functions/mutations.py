@@ -1,64 +1,49 @@
 # -*- coding: utf-8 -*-
-import boto3
 import ulid
-from datetime import datetime
 
-from functions.utils.common import DYNAMO_DB_TABLE_NAME
-
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(DYNAMO_DB_TABLE_NAME)
+from functions.utils.auth import requires_nest_access, requires_nest_ownership
+from functions.utils.models import Nest, Story
 
 
 def create_nest(event):
     """
     createNest function to create a nest object in the dynamodb table
     """
-    item = {
-        'nestId': ulid.new().str,
-        'nestComponent': 'NEST',
-        'createdAt': str(datetime.now()),
-        'name': event["arguments"].get("name", ""),
-        'owner': (event["identity"] or {}).get("username"),
-        'users': []
-    }
-    table.put_item(Item=item)
-
-    return(item)
-
-
-def add_nest_user(event):
-    response = table.update_item(
-        Key={'nestId': event["arguments"]["nestId"], 'nestComponent': 'NEST'},
-        UpdateExpression="SET #usrs = list_append(#usrs, :i)",
-        ExpressionAttributeNames={
-            '#usrs': 'users',
-        },
-        ExpressionAttributeValues={
-            ':i': [event["arguments"]["username"]],
-        },
-        ReturnValues='ALL_NEW'
+    nest = Nest(
+        ulid.new().str,
+        'NEST',
+        name=event["arguments"].get("name", ""),
+        owner=(event["identity"] or {}).get("username"),
+        users=[]
     )
-    return response["Attributes"]
+    nest.save()
+
+    return nest.to_dict()
 
 
+@requires_nest_ownership
+def add_nest_user(event):
+    nest = Nest.get(event["arguments"]["nestId"], 'NEST')
+    users = list(nest.users)
+    users.append(event["arguments"]["username"])
+    nest.users = users
+
+    return nest.to_dict()
+
+
+@requires_nest_access
 def create_story(event):
-    # first get nest so we know it exists
-    response = table.get_item(Key={'nestId': event["arguments"]["nestId"], 'nestComponent': 'NEST'})
-    response["Item"]  # this will throw an error if nest does not exist  TODO: make this nicer
+    # get nest so we know it exists first
+    Nest.get(event["arguments"]["nestId"], 'NEST')
 
-    story_id = ulid.new().str
+    story = Story(
+        event["arguments"]["nestId"],
+        f'STORY.{ulid.new().str}',
+        title=event["arguments"]["title"],
+        description=event["arguments"].get("descritpion"),
+        owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
+        status=event["arguments"].get("status", "IDEA")
+    )
+    story.save()
 
-    # now that we know that the nest exists, lets add the item
-    item = {
-        'nestId': event["arguments"]["nestId"],
-        'nestComponent': f"STORY.{story_id}",
-        'createdAt': str(datetime.now()),
-        'title': event["arguments"]["title"],
-        'description': event["arguments"].get("descritpion"),
-        'owner': event["arguments"].get("owner"),
-        'status': event["arguments"].get("status", "IDEA")
-    }
-    table.put_item(Item=item)
-
-    item["storyId"] = story_id
-    return(item)
+    return story.to_dict()
