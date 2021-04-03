@@ -20,6 +20,8 @@ custom:
     layer: true
 
   dynamodb-table: 'scrumnest-${self:custom.stage}'
+  s3-upload-bucket-name:
+    Fn::Sub: '${AWS::AccountId}-scrumnest-files-${self:custom.stage}'
 
   appSync:
     name: ${self:service}-${self:custom.stage}
@@ -67,18 +69,6 @@ custom:
         field: stories
     schema: schema.graphql
     dataSources:
-      #- type: AMAZON_DYNAMODB
-      #  name: ScrumNestTable
-      #  description: Scrum Nest Table
-      #  config:
-      #    tableName: ${self:custom.dynamodb-table}
-      #    serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
-      #    iamRoleStatements:
-      #      - Effect: "Allow"
-      #        Action:
-      #          - "dynamodb:*"
-      #        Resource:
-      #          - "arn:aws:dynamodb:::table/scrumnest*"
       - type: AWS_LAMBDA
         name: LambdaProxy
         description: 'Lambda Proxy to DynamoDB'
@@ -123,6 +113,7 @@ resources:
   - ${file(resources/cognito-identity-pool.yml)}
   - ${file(resources/dynamodb-table.yml)}
   - ${file(resources/outputs.yml)}
+  - ${file(resources/s3.yml)}
 
 plugins:
    - serverless-stack-output
