@@ -61,3 +61,12 @@ def add_story_attachment(event):
     story.save()
 
     return story.to_dict()
+
+
+@requires_nest_access
+def update_story_status(event):
+    story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
+    story.status = event["arguments"]["status"]
+    story.save()
+
+    return Nest.get(event["arguments"]["nestId"], "NEST").to_dict()  # Return Nest for UI simplification

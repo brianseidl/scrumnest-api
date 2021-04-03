@@ -5,7 +5,8 @@ from functions.mutations import (
     add_nest_user,
     add_story_attachment,
     create_nest,
-    create_story
+    create_story,
+    update_story_status
 )
 from functions.queries import (
     get_nest,
@@ -28,7 +29,8 @@ def main(event, context):
             "createNest": create_nest,
             "addNestUser": add_nest_user,
             "createStory": create_story,
-            "addStoryAttachment": add_story_attachment
+            "addStoryAttachment": add_story_attachment,
+            "updateStoryStatus": update_story_status
         },
         "Query": {
             "nest": get_nest,

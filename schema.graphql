@@ -2,10 +2,12 @@ type Mutation {
   createNest(
     name: String!
   ): Nest
+
   addNestUser(
     nestId: ID!,
     username: String!
   ): Nest
+
   createStory(
     nestId: ID!,
     title: String!,
@@ -13,12 +15,19 @@ type Mutation {
     owner: String,
     status: Status
   ): Story
+
   addStoryAttachment(
     nestId: ID!,
     storyId: ID!,
     name: String!,
     key: String!
   ): Story
+
+  updateStoryStatus(
+    nestId: ID!,
+    storyId: ID!,
+    status: Status!
+  ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 }
 
 type Query {
@@ -26,6 +35,11 @@ type Query {
   nests: [Nest]
   story(nestId: ID!, storyId: ID!): Story
   stories(nestId: ID!): [Story]
+}
+
+type Subscription {
+  subscribeToNestStatus(nestId: ID!): Nest
+    @aws_subscribe(mutations: ["updateStoryStatus"])
 }
 
 type Nest {
@@ -66,4 +80,5 @@ enum Status {
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }

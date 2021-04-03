@@ -71,6 +71,10 @@ custom:
         dataSource: LambdaProxy
         type: Mutation
         field: addStoryAttachment
+      -
+        dataSource: LambdaProxy
+        type: Mutation
+        field: updateStoryStatus
     schema: schema.graphql
     dataSources:
       - type: AWS_LAMBDA
