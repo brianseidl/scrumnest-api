@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from pynamodb.attributes import (
-    MapAttribute, UnicodeAttribute, UnicodeSetAttribute, UTCDateTimeAttribute
+    MapAttribute, UnicodeAttribute, UnicodeSetAttribute, UTCDateTimeAttribute, ListAttribute
 )
 from pynamodb.models import Model
 
@@ -54,6 +54,12 @@ class Nest(BaseModel):
         return(Story.query(self.nestId, Story.nestComponent.startswith('STORY')))
 
 
+class Attachment(MapAttribute):
+    name = UnicodeAttribute(attr_name='name')
+    key = UnicodeAttribute(attr_name='key')
+    createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
+
+
 class Story(BaseModel):
     class Meta:
         table_name = DYNAMO_DB_TABLE_NAME
@@ -65,6 +71,7 @@ class Story(BaseModel):
     description = UnicodeAttribute(attr_name='description', null=True)
     status = UnicodeAttribute(attr_name='status', default='IDEA')
     createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
+    attachments = ListAttribute(attr_name='attachments', of=Attachment, default=[])
 
     def to_dict(self):
         result = super().to_dict()

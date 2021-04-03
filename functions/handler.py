@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 import json
 
-from functions.mutations import create_nest, add_nest_user, create_story
-from functions.queries import get_nest, get_nests, get_story, get_stories
+from functions.mutations import (
+    add_nest_user,
+    add_story_attachment,
+    create_nest,
+    create_story
+)
+from functions.queries import (
+    get_nest,
+    get_nests,
+    get_story,
+    get_stories
+)
 
 
 def main(event, context):
@@ -17,7 +27,8 @@ def main(event, context):
         "Mutation": {
             "createNest": create_nest,
             "addNestUser": add_nest_user,
-            "createStory": create_story
+            "createStory": create_story,
+            "addStoryAttachment": add_story_attachment
         },
         "Query": {
             "nest": get_nest,

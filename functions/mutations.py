@@ -2,7 +2,7 @@
 import ulid
 
 from functions.utils.auth import requires_nest_access, requires_nest_ownership
-from functions.utils.models import Nest, Story
+from functions.utils.models import Nest, Story, Attachment
 
 
 def create_nest(event):
@@ -44,6 +44,20 @@ def create_story(event):
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
         status=event["arguments"].get("status", "IDEA")
     )
+    story.save()
+
+    return story.to_dict()
+
+
+@requires_nest_access
+def add_story_attachment(event):
+    # get story so we know it exists first
+    story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
+    new_attachment = Attachment(
+        name=event["arguments"]["name"],
+        key=event["arguments"]["key"]
+    )
+    story.attachments.append(new_attachment)
     story.save()
 
     return story.to_dict()

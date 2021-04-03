@@ -13,6 +13,12 @@ type Mutation {
     owner: String,
     status: Status
   ): Story
+  addStoryAttachment(
+    nestId: ID!,
+    storyId: ID!,
+    name: String!,
+    key: String!
+  ): Story
 }
 
 type Query {
@@ -36,8 +42,16 @@ type Story {
   storyId: ID!
   title: String!
   description: String
+  createdAt: String!
   owner: String
   status: Status!
+  attachments: [FileObject]!
+}
+
+type FileObject {
+  name: String!
+  key: String!
+  createdAt: String!
 }
 
 enum Status {
