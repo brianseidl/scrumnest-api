@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
+import boto3
+
 from functions.utils.auth import requires_nest_access
+from functions.utils.common import USER_POOL_ID
 from functions.utils.models import Nest, Story
+
+cog_client = boto3.client("cognito-idp")
 
 
 @requires_nest_access
@@ -31,3 +36,30 @@ def get_story(event):
 def get_stories(event):
     stories = Story.query(event["arguments"]["nestId"], Story.nestComponent.startswith('STORY'))
     return [story.to_dict() for story in stories]
+
+
+def get_users(event):
+    prefix = event["arguments"].get("prefix")
+    username = event["arguments"].get("username")
+
+    if username:
+        user_filter = f'username="{username}"'
+    elif prefix:
+        user_filter = f'username^="{prefix}"'
+    else:
+        user_filter = ''
+
+    users = cog_client.list_users(
+        UserPoolId=USER_POOL_ID,
+        Filter=user_filter
+    )
+
+    ret_users = []
+    # generate kv attributes bc cognito is weird
+    for user in users["Users"]:
+        user_dict = {"username": user["Username"]}
+        for attr_dict in user["Attributes"]:
+            user_dict[attr_dict["Name"]] = attr_dict["Value"]
+        ret_users.append(user_dict)
+
+    return ret_users

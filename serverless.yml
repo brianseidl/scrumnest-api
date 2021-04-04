@@ -23,6 +23,8 @@ custom:
   s3-upload-bucket-name:
     Fn::Sub: '${AWS::AccountId}-scrumnest-files-${self:custom.stage}'
 
+  userPoolId: !Ref CognitoUserPool
+
   appSync:
     name: ${self:service}-${self:custom.stage}
     authenticationType: AMAZON_COGNITO_USER_POOLS
@@ -75,6 +77,10 @@ custom:
         dataSource: LambdaProxy
         type: Mutation
         field: updateStoryStatus
+      -
+        dataSource: LambdaProxy
+        type: Query
+        field: users
     schema: schema.graphql
     dataSources:
       - type: AWS_LAMBDA
@@ -101,11 +107,13 @@ provider:
         - 's3:*'
         - 'dynamodb:*'
         - 'logs:*'
+        - 'cognito-idp:ListUsers'
       Resource: '*'
 
   environment:
     REGION: ${self:provider.region}
     DYNAMO_DB_TABLE_NAME: ${self:custom.dynamodb-table}
+    USER_POOL_ID: ${self:custom.userPoolId}
 
 
 functions:

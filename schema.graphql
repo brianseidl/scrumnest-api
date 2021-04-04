@@ -32,9 +32,10 @@ type Mutation {
 
 type Query {
   nest(nestId: ID!): Nest
-  nests: [Nest]
+  nests(username: String): [Nest]  # optional username param
   story(nestId: ID!, storyId: ID!): Story
   stories(nestId: ID!): [Story]
+  users(prefix: String, username: String): [User]  # optional username prefix and username param
 }
 
 type Subscription {
@@ -66,6 +67,11 @@ type FileObject {
   name: String!
   key: String!
   createdAt: String!
+}
+
+type User {
+  username: String!
+  email: String!
 }
 
 enum Status {

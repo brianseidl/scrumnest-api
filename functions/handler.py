@@ -12,7 +12,8 @@ from functions.queries import (
     get_nest,
     get_nests,
     get_story,
-    get_stories
+    get_stories,
+    get_users
 )
 
 
@@ -36,7 +37,8 @@ def main(event, context):
             "nest": get_nest,
             "nests": get_nests,
             "story": get_story,
-            "stories": get_stories
+            "stories": get_stories,
+            "users": get_users
         }
     }
 
