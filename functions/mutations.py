@@ -27,6 +27,7 @@ def add_nest_user(event):
     users = list(nest.users)
     users.append(event["arguments"]["username"])
     nest.users = users
+    nest.save()
 
     return nest.to_dict()
 
@@ -42,7 +43,7 @@ def create_story(event):
         title=event["arguments"]["title"],
         description=event["arguments"].get("descritpion"),
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
-        status=event["arguments"].get("status", "IDEA")
+        status=event["arguments"].get("status", "TODO")
     )
     story.save()
 
