@@ -11,6 +11,7 @@ package:
 custom:
   stage: ${opt:stage, 'dev'}
   env: ${file(envs.yml):${self:custom.stage}}
+  fromEmail: ${opt:email, 'Scrum Nest Support<support@scrumnest.com>'}
 
   output:
     file: output.json
@@ -24,6 +25,7 @@ custom:
     Fn::Sub: '${AWS::AccountId}-scrumnest-files-${self:custom.stage}'
 
   userPoolId: !Ref CognitoUserPool
+  userPoolName: ${self:custom.env.userPoolName}
 
   appSync:
     name: ${self:service}-${self:custom.stage}
@@ -108,12 +110,14 @@ provider:
         - 'dynamodb:*'
         - 'logs:*'
         - 'cognito-idp:ListUsers'
+        - 'ses:SendEmail'
       Resource: '*'
 
   environment:
     REGION: ${self:provider.region}
     DYNAMO_DB_TABLE_NAME: ${self:custom.dynamodb-table}
     USER_POOL_ID: ${self:custom.userPoolId}
+    FROM_EMAIL: ${self:custom.fromEmail}
 
 
 functions:
@@ -121,6 +125,16 @@ functions:
     handler: functions.handler.main
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
+
+  postSignUp:
+    handler: functions.post-signup.add_usernames_to_nests
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    events:
+      - cognitoUserPool:
+          pool: ${self:custom.userPoolName}
+          trigger: PostConfirmation
+          existing: true
 
 
 resources:

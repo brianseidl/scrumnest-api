@@ -5,7 +5,7 @@ type Mutation {
 
   addNestUser(
     nestId: ID!,
-    username: String!
+    email: String!
   ): Nest
 
   createStory(
@@ -49,7 +49,7 @@ type Nest {
   createdAt: String!
   owner: String!
   stories: [Story]!
-  users: [String]!
+  users: [User]!
 }
 
 type Story {
@@ -70,17 +70,15 @@ type FileObject {
 }
 
 type User {
-  username: String!
+  username: String
   email: String!
 }
 
 enum Status {
-  IDEA
-  DEFINED
-  IN_DEV
-  TESTING
-  COMPLETE
-  ACCEPTED
+  TODO
+  DEV
+  QA
+  COMPLETED
 }
 
 schema {

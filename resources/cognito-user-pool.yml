@@ -34,6 +34,17 @@ Resources:
         - ADMIN_NO_SRP_AUTH
       GenerateSecret: true
 
+  CognitoInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - CognitoUserPool
+      - PostSignUpLambdaFunction
+    Properties:
+      FunctionName: !GetAtt PostSignUpLambdaFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt CognitoUserPool.Arn
+
 Outputs:
   UserPoolId:
     Value:

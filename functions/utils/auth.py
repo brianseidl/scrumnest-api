@@ -14,7 +14,10 @@ def requires_nest_access(function):
         except Nest.DoesNotExist:
             raise UnauthorizedException()
 
-        if user not in [*nest.users, nest.owner]:
+        # generate list of users
+        nest_users = [user['username'] for user in nest.users]
+
+        if user not in [*nest_users, nest.owner]:
             raise UnauthorizedException()
 
         return function(*args, **kwargs)

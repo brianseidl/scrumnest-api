@@ -1,6 +1,6 @@
 # put custom values here
 dev:
-  fakeCustomValue: true
+  userPoolName: ScrumNestAppSync-dev-user-pool
 
 prod:
-  fakeCustomValue: true
+  userPoolName: ScrumNestAppSync-prod-user-pool

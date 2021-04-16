@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import ulid
+import boto3
 
 from functions.utils.auth import requires_nest_access, requires_nest_ownership
+from functions.utils.common import get_user_by_email, FROM_EMAIL
 from functions.utils.models import Nest, Story, Attachment
+
+ses = boto3.client("ses")
 
 
 def create_nest(event):
@@ -13,8 +17,7 @@ def create_nest(event):
         ulid.new().str,
         'NEST',
         name=event["arguments"].get("name", ""),
-        owner=(event["identity"] or {}).get("username"),
-        users=[]
+        owner=(event["identity"] or {}).get("username")
     )
     nest.save()
 
@@ -25,9 +28,28 @@ def create_nest(event):
 def add_nest_user(event):
     nest = Nest.get(event["arguments"]["nestId"], 'NEST')
     users = list(nest.users)
-    users.append(event["arguments"]["username"])
+    email = event["arguments"]["email"]
+
+    user_obj = {
+        "email": email,
+        "username": get_user_by_email(event["arguments"]["email"])
+    }
+
+    users.append(user_obj)
     nest.users = users
     nest.save()
+
+    # send email
+    ses.send_email(
+        Source=FROM_EMAIL,
+        Destination={'ToAddresses': [email]},
+        Message={
+            'Subject': {'Data': f"You are invited to join the nest: {nest.name}"},
+            'Body': {
+                'Text': {'Data': f"Hi there,\n\nYou have been added to {nest.name}.\nCheck it out at https://scrumnest.com"}
+            }
+        }
+    )
 
     return nest.to_dict()
 
