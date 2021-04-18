@@ -33,7 +33,7 @@ custom:
     userPoolConfig:
       awsRegion: ${self:provider.region}
       defaultAction: ALLOW
-      userPoolId: { Fn::GetAtt: [CognitoUserPool, Arn] }
+      userPoolId: ${self:custom.userPoolId}
     #apiKeys:
     #  - temp-key
     logConfig:
