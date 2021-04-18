@@ -46,7 +46,7 @@ def add_nest_user(event):
         Message={
             'Subject': {'Data': f"You are invited to join the nest: {nest.name}"},
             'Body': {
-                'Text': {'Data': f"Hi there,\n\nYou have been added to {nest.name}.\nCheck it out at https://scrumnest.com"}
+                'Text': {'Data': f"Hi there,\n\nYou have been added to {nest.name}.\nCheck it out at https://scrumnest.com/nests/{nest.nestId}"}
             }
         }
     )
