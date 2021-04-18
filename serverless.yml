@@ -78,7 +78,7 @@ custom:
       -
         dataSource: LambdaProxy
         type: Mutation
-        field: updateStoryStatus
+        field: updateStory
       -
         dataSource: LambdaProxy
         type: Query

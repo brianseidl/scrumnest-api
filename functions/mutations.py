@@ -4,7 +4,7 @@ import boto3
 
 from functions.utils.auth import requires_nest_access, requires_nest_ownership
 from functions.utils.common import get_user_by_email, FROM_EMAIL
-from functions.utils.models import Nest, Story, Attachment
+from functions.utils.models import Nest, Story, Attachment, Comment
 
 ses = boto3.client("ses")
 
@@ -87,9 +87,27 @@ def add_story_attachment(event):
 
 
 @requires_nest_access
-def update_story_status(event):
-    story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
-    story.status = event["arguments"]["status"]
+def update_story(event):
+    nest_id = event["arguments"].pop('nestId')
+    story_id = event["arguments"].pop('storyId')
+    story = Story.get(nest_id, f"STORY.{story_id}")
+
+    # handle comments first because they don't line up with model
+    if event["arguments"].get('comment'):
+        comment = Comment(
+            username=(event["identity"] or {}).get("username", ""),
+            content=event["arguments"].pop('comment')
+        )
+        story.comments.append(comment)
+
+    # Set parameters
+    for arg, value in event["arguments"].items():
+        setattr(story, arg, value)
+
     story.save()
 
-    return Nest.get(event["arguments"]["nestId"], "NEST").to_dict()  # Return Nest for UI simplification
+    # The popped args need to be back. Some weird stuff
+    event["arguments"]["nestId"] = nest_id
+    event["arguments"]["storyId"] = story_id
+
+    return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from pynamodb.attributes import (
-    MapAttribute, UnicodeAttribute, UTCDateTimeAttribute, ListAttribute
+    ListAttribute,
+    MapAttribute,
+    NumberAttribute,
+    UnicodeAttribute,
+    UTCDateTimeAttribute
 )
 from pynamodb.models import Model
 
@@ -65,6 +69,12 @@ class Attachment(MapAttribute):
     createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
 
 
+class Comment(MapAttribute):
+    username = UnicodeAttribute(attr_name='username')
+    createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
+    content = UnicodeAttribute(attr_name='content')
+
+
 class Story(BaseModel):
     class Meta:
         table_name = DYNAMO_DB_TABLE_NAME
@@ -76,7 +86,10 @@ class Story(BaseModel):
     description = UnicodeAttribute(attr_name='description', null=True)
     status = UnicodeAttribute(attr_name='status', default='TODO')
     createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
+    priority = UnicodeAttribute(attr_name='priority', null=True)
+    effort = NumberAttribute(attr_name='effort', null=True)
     attachments = ListAttribute(attr_name='attachments', of=Attachment, default=[])
+    comments = ListAttribute(attr_name='comments', of=Comment, default=[])
 
     def to_dict(self):
         result = super().to_dict()

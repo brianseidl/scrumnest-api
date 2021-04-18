@@ -23,10 +23,16 @@ type Mutation {
     key: String!
   ): Story
 
-  updateStoryStatus(
+  updateStory(
     nestId: ID!,
     storyId: ID!,
-    status: Status!
+    status: Status!,
+    #TODO: Epic
+    description: String,
+    comment: String,  # String conent of the message. Username will be determined by user making call
+    priority: Priority,
+    effort: Int,
+    owner: String  # username string
   ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 }
 
@@ -39,8 +45,8 @@ type Query {
 }
 
 type Subscription {
-  subscribeToNestStatus(nestId: ID!): Nest
-    @aws_subscribe(mutations: ["updateStoryStatus"])
+  nestStories(nestId: ID!): Nest
+    @aws_subscribe(mutations: ["updateStory"])
 }
 
 type Nest {
@@ -61,6 +67,9 @@ type Story {
   owner: String
   status: Status!
   attachments: [FileObject]!
+  comments: [Comment]!
+  priority: Priority
+  effort: Int
 }
 
 type FileObject {
@@ -72,6 +81,20 @@ type FileObject {
 type User {
   username: String
   email: String!
+}
+
+type Comment {
+  username: String!
+  content: String!
+  createdAt: String!
+}
+
+enum Priority {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
 enum Status {
