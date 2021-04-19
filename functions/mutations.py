@@ -57,7 +57,7 @@ def add_nest_user(event):
 @requires_nest_access
 def create_story(event):
     # get nest so we know it exists first
-    Nest.get(event["arguments"]["nestId"], 'NEST')
+    nest = Nest.get(event["arguments"]["nestId"], 'NEST')
 
     story = Story(
         event["arguments"]["nestId"],
@@ -65,11 +65,11 @@ def create_story(event):
         title=event["arguments"]["title"],
         description=event["arguments"].get("descritpion"),
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
-        status=event["arguments"].get("status", "TODO")
+        status=event["arguments"].get("status", "TODO") or "TODO"
     )
     story.save()
 
-    return story.to_dict()
+    return nest.to_dict()  # Return Nest for UI simplification
 
 
 @requires_nest_access
@@ -102,12 +102,9 @@ def update_story(event):
 
     # Set parameters
     for arg, value in event["arguments"].items():
-        setattr(story, arg, value)
+        if value:
+            setattr(story, arg, value)
 
     story.save()
-
-    # The popped args need to be back. Some weird stuff
-    event["arguments"]["nestId"] = nest_id
-    event["arguments"]["storyId"] = story_id
 
     return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification

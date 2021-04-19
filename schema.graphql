@@ -14,7 +14,7 @@ type Mutation {
     description: String,
     owner: String,
     status: Status
-  ): Story
+  ): Nest
 
   addStoryAttachment(
     nestId: ID!,
@@ -46,7 +46,7 @@ type Query {
 
 type Subscription {
   nestStories(nestId: ID!): Nest
-    @aws_subscribe(mutations: ["updateStory"])
+    @aws_subscribe(mutations: ["createStory", "updateStory"])
 }
 
 type Nest {
