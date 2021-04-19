@@ -19,7 +19,12 @@ def get_nest(event):
 
 
 def get_nests(event):
-    return [nest.to_dict() for nest in Nest.scan(Nest.nestComponent == 'NEST')]
+    user = (event["identity"] or {}).get("username")
+    nests = Nest.scan(Nest.nestComponent == 'NEST')
+
+    # filter nests to ones that user is authorized to access
+    nests = filter(lambda nest: user in [nest.owner, *[user['username'] for user in nest.users]], nests)
+    return [nest.to_dict() for nest in nests]
 
 
 @requires_nest_access
