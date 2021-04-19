@@ -14,7 +14,7 @@ def create_nest(event):
     createNest function to create a nest object in the dynamodb table
     """
     nest = Nest(
-        ulid.new().int >> 64,
+        str(ulid.new().int >> 64),
         'NEST',
         name=event["arguments"].get("name", ""),
         owner=(event["identity"] or {}).get("username")
