@@ -14,7 +14,7 @@ def create_nest(event):
     createNest function to create a nest object in the dynamodb table
     """
     nest = Nest(
-        ulid.new().str,
+        ulid.new().int >> 64,
         'NEST',
         name=event["arguments"].get("name", ""),
         owner=(event["identity"] or {}).get("username")
@@ -61,7 +61,7 @@ def create_story(event):
 
     story = Story(
         event["arguments"]["nestId"],
-        f'STORY.{ulid.new().str}',
+        f'STORY.{ulid.new().int >> 64}',
         title=event["arguments"]["title"],
         description=event["arguments"].get("descritpion"),
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
