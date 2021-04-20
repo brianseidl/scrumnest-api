@@ -43,7 +43,7 @@ type Mutation {
 
 type Query {
   nest(nestId: ID!): Nest
-  nests(username: String): [Nest]  # optional username param
+  nests: [Nest]  # optional username param
   story(nestId: ID!, storyId: ID!): Story
   stories(nestId: ID!): [Story]
   users(prefix: String, username: String): [User]  # optional username prefix and username param
