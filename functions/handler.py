@@ -6,6 +6,7 @@ from functions.mutations import (
     add_story_attachment,
     create_nest,
     create_story,
+    delete_story,
     update_story
 )
 from functions.queries import (
@@ -27,10 +28,11 @@ def main(event, context):
     # and set it to the function that processes that action.
     actions = {
         "Mutation": {
-            "createNest": create_nest,
             "addNestUser": add_nest_user,
-            "createStory": create_story,
             "addStoryAttachment": add_story_attachment,
+            "createNest": create_nest,
+            "createStory": create_story,
+            "deleteStory": delete_story,
             "updateStory": update_story
         },
         "Query": {

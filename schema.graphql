@@ -14,14 +14,14 @@ type Mutation {
     description: String,
     owner: String,
     status: Status
-  ): Nest
+  ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 
   addStoryAttachment(
     nestId: ID!,
     storyId: ID!,
     name: String!,
     key: String!
-  ): Story
+  ): Story  # return Story here instead of nest because attactments don't show on nest view
 
   updateStory(
     nestId: ID!,
@@ -33,6 +33,11 @@ type Mutation {
     priority: Priority,
     effort: Int,
     owner: String  # username string
+  ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
+
+  deleteStory(
+    nestId: ID!,
+    storyId: ID!
   ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 }
 
@@ -46,7 +51,7 @@ type Query {
 
 type Subscription {
   nestStories(nestId: ID!): Nest
-    @aws_subscribe(mutations: ["createStory", "updateStory"])
+    @aws_subscribe(mutations: ["createStory", "updateStory", "deleteStory"])
 }
 
 type Nest {

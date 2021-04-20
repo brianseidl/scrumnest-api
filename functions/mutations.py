@@ -121,3 +121,14 @@ def update_story(event):
     story.save()
 
     return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification
+
+
+@requires_nest_access
+def delete_story(event):
+    nest_id = event["arguments"].pop('nestId')
+    story_id = event["arguments"].pop('storyId')
+
+    story = Story.get(nest_id, f"STORY.{story_id}")
+    story.delete()
+
+    return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification

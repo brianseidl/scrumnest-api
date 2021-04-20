@@ -83,6 +83,10 @@ custom:
         dataSource: LambdaProxy
         type: Query
         field: users
+      -
+        dataSource: LambdaProxy
+        type: Mutation
+        field: deleteStory
     schema: schema.graphql
     dataSources:
       - type: AWS_LAMBDA
