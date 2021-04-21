@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import ulid
 import boto3
+from datetime import datetime
 
 from functions.utils.auth import requires_nest_access, requires_nest_ownership
 from functions.utils.common import get_user_by_email, FROM_EMAIL, USER_POOL_ID
@@ -136,6 +137,9 @@ def update_story(event):
     for arg, value in event["arguments"].items():
         if value:
             setattr(story, arg, value)
+
+    if event["arguments"].get("status", "") == "COMPLETED" and not story.completedAt:
+        story.completedAt = datetime.now()
 
     story.save()
 

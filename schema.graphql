@@ -48,7 +48,7 @@ type Mutation {
 
 type Query {
   nest(nestId: ID!): Nest
-  nests: [Nest]  # optional username param
+  nests: [Nest]
   story(nestId: ID!, storyId: ID!): Story
   stories(nestId: ID!): [Story]
   users(prefix: String, username: String): [User]  # optional username prefix and username param
@@ -74,6 +74,7 @@ type Story {
   title: String!
   description: String
   createdAt: String!
+  completedAt: String
   owner: String
   status: Status!
   attachments: [FileObject]!
