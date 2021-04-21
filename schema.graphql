@@ -8,6 +8,11 @@ type Mutation {
     email: String!
   ): Nest
 
+  removeNestUser(
+    nestId: ID!,
+    email: String!
+  ): Nest
+
   createStory(
     nestId: ID!,
     title: String!,

@@ -54,6 +54,10 @@ custom:
       -
         dataSource: LambdaProxy
         type: Mutation
+        field: removeNestUser
+      -
+        dataSource: LambdaProxy
+        type: Mutation
         field: createStory
       -
         dataSource: LambdaProxy

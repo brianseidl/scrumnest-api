@@ -39,6 +39,7 @@ def create_nest(event):
 
 @requires_nest_ownership
 def add_nest_user(event):
+    sender_username = (event["identity"] or {}).get("username")
     nest = Nest.get(event["arguments"]["nestId"], 'NEST')
     users = list(nest.users)
     email = event["arguments"]["email"]
@@ -49,6 +50,8 @@ def add_nest_user(event):
     }
 
     users.append(user_obj)
+    # make unique
+    users = list({v['email']: v for v in users}.values())
     nest.users = users
     nest.save()
 
@@ -59,10 +62,26 @@ def add_nest_user(event):
         Message={
             'Subject': {'Data': f"You are invited to join the nest: {nest.name}"},
             'Body': {
-                'Text': {'Data': f"Hi there,\n\nYou have been added to {nest.name}.\nCheck it out at https://scrumnest.com/nests/{nest.nestId}"}
+                'Text': {'Data': f"Hi there,\n\nYou have been added to {nest.name} by {sender_username}.\nCheck it out at https://scrumnest.com/nests/{nest.nestId}"}
             }
         }
     )
+
+    return nest.to_dict()
+
+
+@requires_nest_ownership
+def remove_nest_user(event):
+    nest = Nest.get(event["arguments"]["nestId"], 'NEST')
+    users = list(nest.users)
+    email = event["arguments"]["email"]
+
+    for i, user in enumerate(users):
+        if user["email"] == email:
+            users.pop(i)
+
+    nest.users = users
+    nest.save()
 
     return nest.to_dict()
 
