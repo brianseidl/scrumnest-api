@@ -3,3 +3,15 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: '${self:custom.s3-upload-bucket-name}'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            AllowedOrigins:
+              - 'https://scrumnest.com'
+              - 'http://localhost:3000'

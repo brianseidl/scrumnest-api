@@ -32,7 +32,6 @@ type Mutation {
     nestId: ID!,
     storyId: ID!,
     status: Status!,
-    #TODO: Epic
     description: String,
     comment: String,  # String conent of the message. Username will be determined by user making call
     priority: Priority,

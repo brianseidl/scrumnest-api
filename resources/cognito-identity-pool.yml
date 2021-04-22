@@ -49,6 +49,7 @@ Resources:
                   - 'mobileanalytics:PutEvents'
                   - 'cognito-sync:*'
                   - 'cognito-identity:*'
+                  - 's3:*'
                 Resource: '*'
 Outputs:
   IdentityPoolId:
