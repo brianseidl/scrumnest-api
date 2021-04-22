@@ -133,13 +133,15 @@ def update_story(event):
         )
         story.comments.append(comment)
 
+    if story.status != "COMPLETED" and event["arguments"].get("status") == "COMPLETED":
+        story.completedAt = datetime.now()
+    elif event["arguments"].get("status", "COMPLETED") != "COMPLETED" and story.status == "COMPLETED":
+        story.completedAt = None
+
     # Set parameters
     for arg, value in event["arguments"].items():
         if value:
             setattr(story, arg, value)
-
-    if event["arguments"].get("status", "") == "COMPLETED" and not story.completedAt:
-        story.completedAt = datetime.now()
 
     story.save()
 
