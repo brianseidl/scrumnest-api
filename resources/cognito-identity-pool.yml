@@ -19,6 +19,8 @@ Resources:
       Roles:
         authenticated:
           Fn::GetAtt: [CognitoAuthRole, Arn]
+        unauthenticated:
+          Fn::GetAtt: [CognitoUnAuthRole, Arn]
 
   # IAM role used for authenticated users
   CognitoAuthRole:
@@ -51,6 +53,29 @@ Resources:
                   - 'cognito-identity:*'
                   - 's3:*'
                 Resource: '*'
+
+  # IAM role used for unauthenticated users
+  CognitoUnAuthRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Federated: 'cognito-identity.amazonaws.com'
+            Action:
+              - 'sts:AssumeRoleWithWebIdentity'
+      Policies:
+        - PolicyName: 'CognitoAuthorizedPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Deny'
+                Action: '*'
+                Resource: '*'
+
 Outputs:
   IdentityPoolId:
     Value:
