@@ -82,6 +82,10 @@ custom:
       -
         dataSource: LambdaProxy
         type: Mutation
+        field: addComment
+      -
+        dataSource: LambdaProxy
+        type: Mutation
         field: updateStory
       -
         dataSource: LambdaProxy

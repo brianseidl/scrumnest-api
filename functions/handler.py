@@ -8,7 +8,8 @@ from functions.mutations import (
     create_story,
     delete_story,
     remove_nest_user,
-    update_story
+    update_story,
+    add_comment
 )
 from functions.queries import (
     get_nest,
@@ -35,7 +36,8 @@ def main(event, context):
             "createStory": create_story,
             "deleteStory": delete_story,
             "removeNestUser": remove_nest_user,
-            "updateStory": update_story
+            "updateStory": update_story,
+            "addComment": add_comment
         },
         "Query": {
             "nest": get_nest,
