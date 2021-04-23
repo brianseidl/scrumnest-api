@@ -118,6 +118,7 @@ def add_story_attachment(event):
 
     return story.to_dict()
 
+
 @requires_nest_access
 def add_comment(event):
     # get story so we know it exists first
