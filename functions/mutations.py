@@ -124,16 +124,17 @@ def add_comment(event):
     story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
 
     comment_data = event["arguments"].pop('comment')
-    
+
     comment = Comment(
         username=(event["identity"] or {}).get("username", ""),
         content=comment_data
     )
-    
+
     story.comments.insert(0, comment)
     story.save()
 
     return story.to_dict()
+
 
 @requires_nest_access
 def update_story(event):

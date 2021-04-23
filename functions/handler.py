@@ -2,6 +2,7 @@
 import json
 
 from functions.mutations import (
+    add_comment,
     add_nest_user,
     add_story_attachment,
     create_nest,
@@ -9,7 +10,6 @@ from functions.mutations import (
     delete_story,
     remove_nest_user,
     update_story,
-    add_comment
 )
 from functions.queries import (
     get_nest,
@@ -30,6 +30,7 @@ def main(event, context):
     # and set it to the function that processes that action.
     actions = {
         "Mutation": {
+            "addComment": add_comment,
             "addNestUser": add_nest_user,
             "addStoryAttachment": add_story_attachment,
             "createNest": create_nest,
@@ -37,7 +38,6 @@ def main(event, context):
             "deleteStory": delete_story,
             "removeNestUser": remove_nest_user,
             "updateStory": update_story,
-            "addComment": add_comment
         },
         "Query": {
             "nest": get_nest,
