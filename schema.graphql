@@ -28,6 +28,12 @@ type Mutation {
     key: String!
   ): Story  # return Story here instead of nest because attactments don't show on nest view
 
+  addComment(
+    nestId: ID!,
+    storyId: ID!,
+    comment: String!
+  ): Story
+
   updateStory(
     nestId: ID!,
     storyId: ID!,

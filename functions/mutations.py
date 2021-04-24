@@ -120,6 +120,24 @@ def add_story_attachment(event):
 
 
 @requires_nest_access
+def add_comment(event):
+    # get story so we know it exists first
+    story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
+
+    comment_data = event["arguments"].pop('comment')
+
+    comment = Comment(
+        username=(event["identity"] or {}).get("username", ""),
+        content=comment_data
+    )
+
+    story.comments.insert(0, comment)
+    story.save()
+
+    return story.to_dict()
+
+
+@requires_nest_access
 def update_story(event):
     nest_id = event["arguments"].pop('nestId')
     story_id = event["arguments"].pop('storyId')
@@ -131,7 +149,7 @@ def update_story(event):
             username=(event["identity"] or {}).get("username", ""),
             content=event["arguments"].pop('comment')
         )
-        story.comments.append(comment)
+        story.comments.insert(0, comment)
 
     if story.status != "COMPLETED" and event["arguments"].get("status") == "COMPLETED":
         story.completedAt = datetime.now()
