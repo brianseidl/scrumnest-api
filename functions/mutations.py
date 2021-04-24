@@ -4,10 +4,9 @@ import boto3
 from datetime import datetime
 
 from functions.utils.auth import requires_nest_access, requires_nest_ownership
-from functions.utils.common import get_user_by_email, FROM_EMAIL, USER_POOL_ID
+from functions.utils.common import get_user_by_email, FROM_EMAIL
 from functions.utils.models import Nest, Story, Attachment, Comment
 
-cog_client = boto3.client("cognito-idp")
 ses = boto3.client("ses")
 
 
@@ -17,22 +16,12 @@ def create_nest(event):
     """
     username = (event["identity"] or {}).get("username")
 
-    users = cog_client.list_users(
-        UserPoolId=USER_POOL_ID,
-        Filter=f'username="{username}"'
-    )
-    user_attrs = users["Users"][0]["Attributes"]
-    for attr_dict in user_attrs:
-        if attr_dict["Name"] == "email":
-            email = attr_dict["Value"]
-
     nest = Nest(
         str(ulid.new().int >> 64),
         'NEST',
         name=event["arguments"].get("name", ""),
         owner=username
     )
-    nest.users = [{'username': username, 'email': email}]
     nest.save()
 
     return nest.to_dict()
