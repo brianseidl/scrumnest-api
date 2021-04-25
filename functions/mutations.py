@@ -151,10 +151,11 @@ def update_story(event):
         )
         story.comments.insert(0, comment)
 
-    if story.status != "COMPLETED" and event["arguments"].get("status") == "COMPLETED":
-        story.completedAt = datetime.now()
-    elif event["arguments"].get("status", "COMPLETED") != "COMPLETED" and story.status == "COMPLETED":
-        story.completedAt = None
+    completedAt = event["arguments"]["completedAt"]
+
+    # Parse string to datetime obj
+    if completedAt:
+        event["arguments"]["completedAt"] = datetime.strptime(completedAt, '%Y-%m-%d')
 
     # Set parameters
     for arg, value in event["arguments"].items():
