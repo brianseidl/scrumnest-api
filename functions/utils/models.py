@@ -86,7 +86,7 @@ class Story(BaseModel):
     description = UnicodeAttribute(attr_name='description', null=True)
     status = UnicodeAttribute(attr_name='status', default='TODO')
     createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
-    completedAt = UTCDateTimeAttribute(attr_name='completedAt', null=True)
+    dateToBeCompleted = UTCDateTimeAttribute(attr_name='dateToBeCompleted', null=True)
     priority = UnicodeAttribute(attr_name='priority', null=True)
     effort = NumberAttribute(attr_name='effort', null=True)
     attachments = ListAttribute(attr_name='attachments', of=Attachment, default=[])

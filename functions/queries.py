@@ -32,10 +32,6 @@ def get_story(event):
     try:
         story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
 
-        # Convert completedAt property to a string
-        if story.completedAt:
-            story.completedAt = story.completedAt.strftime('%Y-%m-%d')
-
     except Story.DoesNotExist:
         return None
 
