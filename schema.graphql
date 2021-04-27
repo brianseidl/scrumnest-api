@@ -42,7 +42,8 @@ type Mutation {
     comment: String,  # String conent of the message. Username will be determined by user making call
     priority: Priority,
     effort: Int,
-    owner: String  # username string
+    owner: String,  # username string
+    dateToBeCompleted: String,
   ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 
   deleteStory(
@@ -79,7 +80,7 @@ type Story {
   title: String!
   description: String
   createdAt: String!
-  completedAt: String
+  dateToBeCompleted: String
   owner: String
   status: Status!
   attachments: [FileObject]!

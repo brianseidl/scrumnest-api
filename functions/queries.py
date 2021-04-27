@@ -31,6 +31,7 @@ def get_nests(event):
 def get_story(event):
     try:
         story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
+
     except Story.DoesNotExist:
         return None
 
