@@ -82,6 +82,10 @@ custom:
       -
         dataSource: LambdaProxy
         type: Mutation
+        field: deleteStoryAttachment
+      -
+        dataSource: LambdaProxy
+        type: Mutation
         field: addComment
       -
         dataSource: LambdaProxy

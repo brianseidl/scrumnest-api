@@ -109,6 +109,25 @@ def add_story_attachment(event):
 
 
 @requires_nest_access
+def delete_story_attachment(event):
+    # get story so we know it exists first
+    story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
+    attachment_key = event["arguments"]["key"]
+
+    attachments = story.attachments
+
+    for i, attachment in enumerate(attachments):
+        if attachment["key"] == attachment_key:
+            attachments.pop(i)
+            break
+
+    story.attachments = attachments
+    story.save()
+
+    return story.to_dict()
+
+
+@requires_nest_access
 def add_comment(event):
     # get story so we know it exists first
     story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
