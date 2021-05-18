@@ -71,7 +71,7 @@ class Attachment(MapAttribute):
 
 class Comment(MapAttribute):
     username = UnicodeAttribute(attr_name='username')
-    createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
+    createdAt = UTCDateTimeAttribute(attr_name='createdAt')
     content = UnicodeAttribute(attr_name='content')
 
 
@@ -83,12 +83,12 @@ class Story(BaseModel):
     nestComponent = UnicodeAttribute(range_key=True, attr_name='nestComponent')
     title = UnicodeAttribute(attr_name='title')
     owner = UnicodeAttribute(attr_name='owner', null=True)
-    description = UnicodeAttribute(attr_name='description', null='')
+    description = UnicodeAttribute(attr_name='description', null=True, default='')
     status = UnicodeAttribute(attr_name='status', default='TODO')
     createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
     dateToBeCompleted = UTCDateTimeAttribute(attr_name='dateToBeCompleted', null=True)
-    priority = UnicodeAttribute(attr_name='priority', default='NONE')
-    effort = NumberAttribute(attr_name='effort', default='')
+    priority = UnicodeAttribute(attr_name='priority', default='NONE', null=True)
+    effort = NumberAttribute(attr_name='effort', null=True)
     attachments = ListAttribute(attr_name='attachments', of=Attachment, default=[])
     comments = ListAttribute(attr_name='comments', of=Comment, default=[])
 
