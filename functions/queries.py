@@ -15,7 +15,7 @@ def get_nest(event):
     except Nest.DoesNotExist:
         return None
 
-    return nest.to_dict()
+    return nest.to_dict(sprint=event['arguments'].get('sprint'))
 
 
 def get_nests(event):
@@ -40,7 +40,12 @@ def get_story(event):
 
 @requires_nest_access
 def get_stories(event):
-    stories = Story.query(event["arguments"]["nestId"], Story.nestComponent.startswith('STORY'))
+    sprint = event["arguments"].get("sprint")
+    if sprint:
+        stories = Story.query(event["arguments"]["nestId"], Story.nestComponent.startswith('STORY'), Story.sprint == sprint)
+    else:
+        stories = Story.query(event["arguments"]["nestId"], Story.nestComponent.startswith('STORY'))
+
     return [story.to_dict() for story in stories]
 
 
