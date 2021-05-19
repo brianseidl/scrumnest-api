@@ -50,24 +50,29 @@ type Mutation {
     effort: Int,
     owner: String,  # username string
     dateToBeCompleted: String,
+    sprint: Int
   ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 
   deleteStory(
     nestId: ID!,
     storyId: ID!
   ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
+
+  addSprint(
+    nestId: ID!,
+  ): Nest
 }
 
 type Query {
-  nest(nestId: ID!): Nest
+  nest(nestId: ID!, sprint: Int): Nest
   nests: [Nest]
   story(nestId: ID!, storyId: ID!): Story
-  stories(nestId: ID!): [Story]
+  stories(nestId: ID!, sprint: Int): [Story]
   users(prefix: String, username: String): [User]  # optional username prefix and username param
 }
 
 type Subscription {
-  nestStories(nestId: ID!): Nest
+  nestStories(nestId: ID!, sprint: Int): Nest
     @aws_subscribe(mutations: ["createStory", "updateStory", "deleteStory"])
 }
 
@@ -78,6 +83,7 @@ type Nest {
   owner: String!
   stories: [Story]!
   users: [User]!
+  sprints: Int!
 }
 
 type Story {
@@ -93,6 +99,7 @@ type Story {
   comments: [Comment]!
   priority: Priority
   effort: Int
+  sprint: Int
 }
 
 type FileObject {

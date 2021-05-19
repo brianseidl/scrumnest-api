@@ -92,7 +92,7 @@ def create_story(event):
     )
     story.save()
 
-    return nest.to_dict()  # Return Nest for UI simplification
+    return nest.to_dict(sprint=event['arguments'].get('sprint'))  # Return Nest for UI simplification
 
 
 @requires_nest_access
@@ -162,7 +162,7 @@ def update_story(event):
         )
         story.comments.insert(0, comment)
 
-    dateToBeCompleted = event["arguments"]["dateToBeCompleted"]
+    dateToBeCompleted = event["arguments"].get("dateToBeCompleted")
 
     # Parse string to datetime obj
     if dateToBeCompleted:
@@ -175,7 +175,7 @@ def update_story(event):
 
     story.save()
 
-    return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification
+    return Nest.get(nest_id, "NEST").to_dict(sprint=event['arguments'].get('sprint'))  # Return Nest for UI simplification
 
 
 @requires_nest_access
@@ -186,4 +186,13 @@ def delete_story(event):
     story = Story.get(nest_id, f"STORY.{story_id}")
     story.delete()
 
-    return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification
+    return Nest.get(nest_id, "NEST").to_dict(sprint=event['arguments'].get('sprint'))  # Return Nest for UI simplification
+
+
+@requires_nest_access
+def add_sprint(event):
+    nest = Nest.get(event["arguments"]["nestId"], 'NEST')
+    nest.sprints += 1
+    nest.save()
+
+    return nest.to_dict()

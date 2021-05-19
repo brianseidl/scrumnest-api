@@ -53,14 +53,18 @@ class Nest(BaseModel):
     owner = UnicodeAttribute(attr_name='owner')
     users = ListAttribute(attr_name='users', of=User, default=[])
     createdAt = UTCDateTimeAttribute(attr_name='createdAt', default=datetime.now())
+    sprints = NumberAttribute(attr_name='sprints', default=1)
 
-    def to_dict(self):
+    def to_dict(self, sprint=None):
         result = super().to_dict()
-        result["stories"] = [story.to_dict() for story in self.get_stories()]
+        result["stories"] = [story.to_dict() for story in self.get_stories(sprint=sprint)]
         return(result)
 
-    def get_stories(self):
-        return(Story.query(self.nestId, Story.nestComponent.startswith('STORY')))
+    def get_stories(self, sprint=None):
+        if sprint:
+            return Story.query(self.nestId, Story.nestComponent.startswith('STORY'), Story.sprint == sprint)
+        else:
+            return Story.query(self.nestId, Story.nestComponent.startswith('STORY'))
 
 
 class Attachment(MapAttribute):
@@ -91,6 +95,7 @@ class Story(BaseModel):
     effort = NumberAttribute(attr_name='effort', null=True)
     attachments = ListAttribute(attr_name='attachments', of=Attachment, default=[])
     comments = ListAttribute(attr_name='comments', of=Comment, default=[])
+    sprint = NumberAttribute(attr_name='sprint', null=True)
 
     def to_dict(self):
         result = super().to_dict()

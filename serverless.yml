@@ -34,8 +34,6 @@ custom:
       awsRegion: ${self:provider.region}
       defaultAction: ALLOW
       userPoolId: ${self:custom.userPoolId}
-    #apiKeys:
-    #  - temp-key
     logConfig:
       loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
       level: ALL
@@ -99,6 +97,10 @@ custom:
         dataSource: LambdaProxy
         type: Mutation
         field: deleteStory
+      -
+        dataSource: LambdaProxy
+        type: Mutation
+        field: addSprint
     schema: schema.graphql
     dataSources:
       - type: AWS_LAMBDA
