@@ -86,7 +86,7 @@ def create_story(event):
         event["arguments"]["nestId"],
         f'STORY.{ulid.new().int >> 64}',
         title=event["arguments"]["title"],
-        description=event["arguments"].get("descritpion"),
+        description=event["arguments"].get("descritpion", ''),
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
         status=event["arguments"].get("status", "TODO") or "TODO"
     )
