@@ -28,6 +28,12 @@ type Mutation {
     key: String!
   ): Story  # return Story here instead of nest because attactments don't show on nest view
 
+  deleteStoryAttachment(
+    nestId: ID!,
+    storyId: ID!,
+    key: String!,
+  ): Story
+
   addComment(
     nestId: ID!,
     storyId: ID!,

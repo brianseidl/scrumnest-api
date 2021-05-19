@@ -2,6 +2,7 @@
 import ulid
 import boto3
 from datetime import datetime
+import dateutil.tz
 
 from functions.utils.auth import requires_nest_access, requires_nest_ownership
 from functions.utils.common import get_user_by_email, FROM_EMAIL
@@ -109,6 +110,25 @@ def add_story_attachment(event):
 
 
 @requires_nest_access
+def delete_story_attachment(event):
+    # get story so we know it exists first
+    story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
+    attachment_key = event["arguments"]["key"]
+
+    attachments = story.attachments
+
+    for i, attachment in enumerate(attachments):
+        if attachment["key"] == attachment_key:
+            attachments.pop(i)
+            break
+
+    story.attachments = attachments
+    story.save()
+
+    return story.to_dict()
+
+
+@requires_nest_access
 def add_comment(event):
     # get story so we know it exists first
     story = Story.get(event["arguments"]["nestId"], f"STORY.{event['arguments']['storyId']}")
@@ -117,7 +137,8 @@ def add_comment(event):
 
     comment = Comment(
         username=(event["identity"] or {}).get("username", ""),
-        content=comment_data
+        content=comment_data,
+        createdAt=datetime.now().replace(tzinfo=dateutil.tz.gettz()),
     )
 
     story.comments.insert(0, comment)
@@ -136,7 +157,8 @@ def update_story(event):
     if event["arguments"].get('comment'):
         comment = Comment(
             username=(event["identity"] or {}).get("username", ""),
-            content=event["arguments"].pop('comment')
+            content=event["arguments"].pop('comment'),
+            createdAt=datetime.now().replace(tzinfo=dateutil.tz.gettz()),
         )
         story.comments.insert(0, comment)
 
