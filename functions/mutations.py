@@ -88,11 +88,12 @@ def create_story(event):
         title=event["arguments"]["title"],
         description=event["arguments"].get("descritpion", ''),
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
-        status=event["arguments"].get("status", "TODO") or "TODO"
+        status=event["arguments"].get("status", "TODO") or "TODO",
+        sprint=event["arguments"].get("sprint")
     )
     story.save()
 
-    return nest.to_dict(sprint=event['arguments'].get('sprint'))  # Return Nest for UI simplification
+    return nest.to_dict()  # Return Nest for UI simplification
 
 
 @requires_nest_access
@@ -175,7 +176,7 @@ def update_story(event):
 
     story.save()
 
-    return Nest.get(nest_id, "NEST").to_dict(sprint=event['arguments'].get('sprint'))  # Return Nest for UI simplification
+    return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification
 
 
 @requires_nest_access
@@ -186,7 +187,7 @@ def delete_story(event):
     story = Story.get(nest_id, f"STORY.{story_id}")
     story.delete()
 
-    return Nest.get(nest_id, "NEST").to_dict(sprint=event['arguments'].get('sprint'))  # Return Nest for UI simplification
+    return Nest.get(nest_id, "NEST").to_dict()  # Return Nest for UI simplification
 
 
 @requires_nest_access

@@ -56,8 +56,7 @@ type Mutation {
 
   deleteStory(
     nestId: ID!,
-    storyId: ID!,
-    sprint: Int
+    storyId: ID!
   ): Nest  # return Nest here because it is simpler for the UI to re-render the whole Nest
 
   addSprint(
@@ -74,7 +73,7 @@ type Query {
 }
 
 type Subscription {
-  nestStories(nestId: ID!, sprint: Int): Nest
+  nestStories(nestId: ID!): Nest
     @aws_subscribe(mutations: ["createStory", "updateStory", "deleteStory"])
 }
 
