@@ -95,7 +95,7 @@ class Story(BaseModel):
     effort = NumberAttribute(attr_name='effort', null=True)
     attachments = ListAttribute(attr_name='attachments', of=Attachment, default=[])
     comments = ListAttribute(attr_name='comments', of=Comment, default=[])
-    sprint = NumberAttribute(attr_name='sprint', null=True)
+    sprint = NumberAttribute(attr_name='sprint', default=-1)
 
     def to_dict(self):
         result = super().to_dict()

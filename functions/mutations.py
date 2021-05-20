@@ -89,7 +89,7 @@ def create_story(event):
         description=event["arguments"].get("descritpion", ''),
         owner=event["arguments"].get("owner") or (event["identity"] or {}).get("username"),
         status=event["arguments"].get("status", "TODO") or "TODO",
-        sprint=event["arguments"].get("sprint")
+        sprint=event["arguments"].get("sprint", -1) or -1
     )
     story.save()
 
